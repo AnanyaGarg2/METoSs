@@ -8,7 +8,7 @@ import jwt from "jsonwebtoken";
 const BASE_COOKIE = {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     path: "/",
 };
 
@@ -100,10 +100,10 @@ export const getMe = asyncHandler(async (req, res) => {
 export const updateProfile = asyncHandler(async (req, res) => {
     const { fullName, headline, bio, location, socialLinks, skills, username } = req.body;
     const updateData = {};
-    
+
     if (username) {
         const usernameStr = username.trim();
-        const existing = await User.findOne({ 
+        const existing = await User.findOne({
             username: { $regex: new RegExp(`^${usernameStr}$`, "i") },
             _id: { $ne: req.user._id }
         });
